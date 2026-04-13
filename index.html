@@ -59,8 +59,8 @@
     <div id="setupArea" class="card">
         <h2>게임 시작</h2>
         <div class="form-group">
-            <label>참여할 인원 수를 입력하세요:</label>
-            <input type="number" id="playerCount" min="1" value="4">
+            <label>참여할 인원 수를 입력하세요 (최대 500명):</label>
+            <input type="number" id="playerCount" min="1" max="500" value="4">
         </div>
         <button onclick="startGame()">게임 시작하기</button>
     </div>
@@ -150,10 +150,10 @@
     let currentWeek = 1;
     let isAdmin = false;
 
-    // 관리자 비밀번호 (원하는 대로 변경 가능)
+    // 관리자 비밀번호
     const ADMIN_PASSWORD = "lck"; 
 
-    // 포맷팅 함수 (1,000 단위 콤마)
+    // 포맷팅 함수
     const fmt = (num) => num.toLocaleString() + "원";
 
     function logMessage(msg) {
@@ -162,25 +162,27 @@
         logBox.scrollTop = logBox.scrollHeight;
     }
 
-    // 💡 거래 가능 시간 체크 함수
+    // 거래 가능 시간 체크 함수
     function isTradingAllowed() {
         const now = new Date();
-        // 한국 시간 기준(KST) 명시
         const window1End = new Date('2026-04-15T17:00:00+09:00'); 
         const window2Start = new Date('2026-04-27T21:00:00+09:00');
 
         if (now <= window1End) {
-            return true; // 4월 15일 17시 이전 (허용)
+            return true;
         } else if (now >= window2Start) {
-            return true; // 4월 27일 21시 이후 (허용)
+            return true; 
         } else {
-            return false; // 그 사이 기간 (거부)
+            return false;
         }
     }
 
+    // 💡 변경된 부분: 인원수 500명 초과 방지 로직 추가
     function startGame() {
         const count = parseInt(document.getElementById('playerCount').value);
-        if (count < 1 || isNaN(count)) return alert("1명 이상이어야 합니다.");
+        if (isNaN(count) || count < 1 || count > 500) {
+            return alert("인원 수는 1명 이상 500명 이하로 설정해주세요.");
+        }
 
         players = [];
         for (let i = 1; i <= count; i++) {
